@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "cookie": "^0.4.1",
     "eslint-import-resolver-typescript": "^2.5.0",
     "moment": "^2.29.1",
     "next": "11.1.2",

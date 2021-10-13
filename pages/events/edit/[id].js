@@ -10,20 +10,24 @@ import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
 import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
+import { parseCookie } from "@/helpers/index";
 import styles from "@/styles/Form.module.css";
 
-export async function getServerSideProps({ params: { id } }) {
+export async function getServerSideProps({ params: { id }, req }) {
+  const { token } = parseCookie(req);
+
   const res = await fetch(`${API_URL}/events/${id}`);
   const evt = await res.json();
 
   return {
     props: {
       evt,
+      token,
     },
   };
 }
 
-const EditEventPage = ({ evt }) => {
+const EditEventPage = ({ evt, token }) => {
   const [values, setValues] = useState({
     name: evt.name,
     performers: evt.performers,
@@ -56,11 +60,16 @@ const EditEventPage = ({ evt }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(values),
     });
 
     if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error("Token not found!");
+        return;
+      }
       toast.error("Something went wrong!");
     } else {
       const evt = await res.json();
@@ -178,7 +187,11 @@ const EditEventPage = ({ evt }) => {
       </div>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
+        <ImageUpload
+          evtId={evt.id}
+          imageUploaded={imageUploaded}
+          token={token}
+        />
       </Modal>
     </Layout>
   );
