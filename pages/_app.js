@@ -6,10 +6,12 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-export default function App({ Component, pageProps }) {
+const App = ({ Component, pageProps }) => {
   return (
     <main className={poppins.className}>
       <Component {...pageProps} />
     </main>
   );
-}
+};
+
+export default App;
