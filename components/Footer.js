@@ -17,7 +17,7 @@ const Footer = () => {
           rel="noopenner noreferrer"
           className="text-blue-500"
         >
-          Indranil halder
+          Indranil Halder
         </a>
       </p>
     </footer>

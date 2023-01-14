@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 const AboutPage = () => {
   return (
     <Layout title="About DJ Events">
-      <h1 className="text-2xl">About Page</h1>
+      <h1 className="text-4xl mb-4">About Project</h1>
       <p className="text-lg">
         This is an ap to find the latest DJ and other musical events.
       </p>
