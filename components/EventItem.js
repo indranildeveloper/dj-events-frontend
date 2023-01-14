@@ -1,12 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
+import moment from "moment";
 
 const EventItem = ({ event }) => {
+  const imageUrl = event.attributes.image.data.attributes.formats.thumbnail.url;
+
+  const { date, name, slug } = event.attributes;
+
   return (
     <div className="shadow-md mb-4 flex gap-4 rounded-md">
       <div className="m-4">
         <Image
-          src={event?.image ? event.image : "/images/event-default.png"}
+          className="rounded-md"
+          src={imageUrl}
           alt=""
           width={170}
           height={100}
@@ -15,14 +21,16 @@ const EventItem = ({ event }) => {
 
       <div className="flex items-center justify-between  w-full px-8">
         <div>
-          <p className="text-sm mb-2">event.date at event.time</p>
-          <h3 className="text-lg">Event Name</h3>
+          <p className="text-sm mb-2">
+            {moment(date).format("MMM Do YYYY, h:mm A")}
+          </p>
+          <h3 className="text-lg">{name}</h3>
         </div>
 
         <div>
           <Link
             className="border-2 border-blue-500 text-blue-500 px-8 py-2 rounded-md transition-all hover:text-white hover:bg-blue-500"
-            href={`/events/${event?.id}`}
+            href={`/events/${slug}`}
           >
             Details
           </Link>

@@ -3,11 +3,11 @@ import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 
 export async function getServerSideProps() {
-  const res = await fetch(`${API_URL}/posts`);
-  const events = await res.json();
+  const response = await fetch(`${API_URL}/events?populate=image`);
+  const events = await response.json();
 
   return {
-    props: { events },
+    props: { events: events.data },
   };
 }
 

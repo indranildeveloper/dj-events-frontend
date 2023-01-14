@@ -4,11 +4,11 @@ import { API_URL } from "@/config/index";
 import Link from "next/link";
 
 export async function getServerSideProps() {
-  const res = await fetch(`${API_URL}/posts`);
-  const events = await res.json();
+  const response = await fetch(`${API_URL}/events?populate=image`);
+  const events = await response.json();
 
   return {
-    props: { events: events.slice(0, 3) },
+    props: { events: events.data.slice(0, 3) },
   };
 }
 
