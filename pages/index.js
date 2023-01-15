@@ -1,14 +1,23 @@
 import EventItem from "@/components/EventItem";
 import Layout from "@/components/Layout";
-import { API_URL } from "@/config/index";
 import Link from "next/link";
+import qs from "qs";
+import { API_URL } from "@/config/index";
 
 export async function getServerSideProps() {
-  const response = await fetch(`${API_URL}/events?populate=image`);
+  const query = qs.stringify({
+    sort: ["date:asc"],
+    populate: "image",
+    pagination: {
+      pageSize: 3,
+    },
+  });
+
+  const response = await fetch(`${API_URL}/events?${query}`);
   const events = await response.json();
 
   return {
-    props: { events: events.data.slice(0, 3) },
+    props: { events: events.data },
   };
 }
 

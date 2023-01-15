@@ -8,11 +8,11 @@ const EventItem = ({ event }) => {
   const { date, name, slug } = event.attributes;
 
   return (
-    <div className="shadow-md mb-4 flex gap-4 rounded-md">
+    <div className="border shadow-md mb-4 flex gap-4 rounded-md">
       <div className="m-4">
         <Image
           className="rounded-md"
-          src={imageUrl}
+          src={imageUrl ? imageUrl : "/images/event-default.png"}
           alt=""
           width={170}
           height={100}
