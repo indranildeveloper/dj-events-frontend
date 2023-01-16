@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import moment from "moment";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import qs from "qs";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
@@ -24,11 +27,13 @@ export async function getServerSideProps({ query: { slug } }) {
   return {
     props: {
       event: event.data[0].attributes,
+      eventId: event.data[0].id,
     },
   };
 }
 
-const EventPage = ({ event }) => {
+const EventPage = ({ event, eventId }) => {
+  const router = useRouter();
   const { name, date, performers, description, venue, address } = event;
 
   let imageUrl;
@@ -38,16 +43,51 @@ const EventPage = ({ event }) => {
     imageUrl = "/images/event-default.png";
   }
 
+  const handleDeleteEvent = async (e) => {
+    if (confirm("Are you sure?")) {
+      const res = await fetch(`${API_URL}/events/${eventId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+      } else {
+        router.push("/events");
+      }
+    }
+  };
+
   return (
     <Layout>
-      <Link
-        className="flex items-center justify-center w-52 gap-2 border-2 border-gray-800 text-gray-800 px-8 py-2 rounded-md transition-all hover:text-white hover:bg-gray-800 mb-8"
-        href="/events"
-      >
-        <FaArrowLeft /> Go Back
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          className="flex items-center justify-center w-52 gap-2 border-2 border-gray-800 text-gray-800 px-8 py-2 rounded-md transition-all hover:text-white hover:bg-gray-800 mb-8"
+          href="/events"
+        >
+          <FaArrowLeft /> Go Back
+        </Link>
+
+        <div className="flex gap-4">
+          <Link
+            href={`/events/edit/${eventId}`}
+            className="flex items-center justify-center gap-2 border-2 px-8 py-2 rounded-md transition-all border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white"
+          >
+            <FaEdit /> Edit Event
+          </Link>
+          <button
+            onClick={(e) => handleDeleteEvent(e)}
+            className="flex items-center justify-center gap-2 border-2 px-8 py-2 rounded-md transition-all border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white"
+          >
+            <FaTrash /> Delete Event
+          </button>
+        </div>
+      </div>
+
       <p className="mb-4">Date: {moment(date).format("MMM Do YYYY, h:mm A")}</p>
       <h1 className="text-2xl mb-4">{name}</h1>
+      <ToastContainer />
       {event.image && (
         <Image
           className="rounded-md"
