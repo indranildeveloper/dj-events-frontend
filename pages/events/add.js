@@ -37,8 +37,6 @@ const AddEventPage = () => {
       toast.error("Please fill in all fields!");
     }
 
-    console.log(JSON.stringify(formData));
-
     try {
       const res = await fetch(`${API_URL}/events`, {
         method: "POST",
@@ -54,7 +52,6 @@ const AddEventPage = () => {
         toast.error("Something went wrong!");
       } else {
         const event = await res.json();
-        // console.log(event.data);
         router.push(`/events/${event.data.attributes.slug}`);
       }
     } catch (error) {

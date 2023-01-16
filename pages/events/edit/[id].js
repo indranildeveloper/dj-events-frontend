@@ -7,6 +7,8 @@ import { FaArrowLeft, FaImage } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/Layout";
+import Modal from "@/components/Modal";
+import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 
 export async function getServerSideProps({ params: { id } }) {
@@ -22,7 +24,6 @@ export async function getServerSideProps({ params: { id } }) {
 }
 
 const EditEventPage = ({ event, eventId }) => {
-  console.log(event);
   const [formData, setFormData] = useState({
     name: event.name,
     performers: event.performers,
@@ -33,8 +34,10 @@ const EditEventPage = ({ event, eventId }) => {
   });
 
   const [imagePreview, setImagePreview] = useState(
-    event.image ? event.image.data.attributes.formats.small.url : null
+    event.image.data ? event.image.data.attributes.formats.small.url : null
   );
+
+  const [showModal, setShowModal] = useState(false);
 
   const router = useRouter();
 
@@ -56,8 +59,6 @@ const EditEventPage = ({ event, eventId }) => {
       toast.error("Please fill in all fields!");
     }
 
-    console.log(JSON.stringify(formData));
-
     try {
       const res = await fetch(`${API_URL}/events/${eventId}`, {
         method: "PUT",
@@ -73,7 +74,6 @@ const EditEventPage = ({ event, eventId }) => {
         toast.error("Something went wrong!");
       } else {
         const event = await res.json();
-        // console.log(event.data);
         router.push(`/events/${event.data.attributes.slug}`);
       }
     } catch (error) {
@@ -81,7 +81,14 @@ const EditEventPage = ({ event, eventId }) => {
     }
   };
 
-  console.log(moment(date).format("DD-MM-yyyyThh:mm a"));
+  const imageUploaded = async (e) => {
+    const res = await fetch(`${API_URL}/events/${eventId}?populate=image`);
+    const event = await res.json();
+    setImagePreview(
+      event.data.attributes.image.data.attributes.formats.small.url
+    );
+    setShowModal(false);
+  };
 
   return (
     <Layout title="Edit Event">
@@ -93,6 +100,38 @@ const EditEventPage = ({ event, eventId }) => {
       </Link>
       <h1 className="text-2xl">Edit Event</h1>
       <ToastContainer />
+
+      <h2 className="mt-4 mb-2 text-xl">Event Image</h2>
+      {imagePreview ? (
+        <Image
+          className="rounded-md"
+          src={imagePreview}
+          height={200}
+          width={270}
+          alt={name}
+        />
+      ) : (
+        <div>
+          <p>No Image Uploaded!</p>
+        </div>
+      )}
+
+      <div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="border-2 border-blue-500 text-blue-500 mt-2 px-4 py-2 flex items-center justify-center gap-2 rounded-md transition-all hover:text-white hover:bg-blue-500"
+        >
+          <FaImage /> Set Image
+        </button>
+      </div>
+
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <ImageUpload
+          eventId={eventId}
+          imageUploaded={(e) => imageUploaded(e)}
+        />
+      </Modal>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="mt-4 grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
@@ -172,27 +211,6 @@ const EditEventPage = ({ event, eventId }) => {
           Submit
         </button>
       </form>
-
-      <h2 className="mt-4 mb-2 text-xl">Event Image</h2>
-      {imagePreview ? (
-        <Image
-          className="rounded-md"
-          src={imagePreview}
-          height={200}
-          width={270}
-          alt={name}
-        />
-      ) : (
-        <div>
-          <p>No Image Uploaded!</p>
-        </div>
-      )}
-
-      <div>
-        <button className="border-2 border-blue-500 text-blue-500 mt-2 px-4 py-2 flex items-center justify-center gap-2 rounded-md transition-all hover:text-white hover:bg-blue-500">
-          <FaImage /> Set Image
-        </button>
-      </div>
     </Layout>
   );
 };
