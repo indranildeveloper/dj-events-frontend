@@ -31,7 +31,12 @@ export async function getServerSideProps({ query: { slug } }) {
 const EventPage = ({ event }) => {
   const { name, date, performers, description, venue, address } = event;
 
-  const imageUrl = event.image.data.attributes.formats.large.url;
+  let imageUrl;
+  if (event.image.data) {
+    imageUrl = event.image.data.attributes.formats.large.url;
+  } else {
+    imageUrl = "/images/event-default.png";
+  }
 
   return (
     <Layout>

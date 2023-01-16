@@ -16,7 +16,9 @@ const Layout = ({ title, keywords, description, children }) => {
       </Head>
       <Header />
       {router.pathname === "/" && <Showcase />}
-      <div className="container mx-auto mt-14 min-h-[60vh]">{children}</div>
+      <div className="container mx-auto px-4 mt-14 min-h-[60vh]">
+        {children}
+      </div>
       <Footer />
     </div>
   );

@@ -8,13 +8,14 @@ const Search = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (searchTerm === "") return;
     router.push(`/events/search?term=${searchTerm}`);
     setSearchTerm("");
   };
 
   return (
     <div>
-      <form className="relative border" onSubmit={(e) => handleSubmit(e)}>
+      <form className="relative" onSubmit={(e) => handleSubmit(e)}>
         <input
           type="text"
           className="border-2 px-6 py-3 border-gray-500 rounded-md w-80 outline-none transition-all duration-300 focus:border-blue-500 focus:w-96"
@@ -23,7 +24,7 @@ const Search = () => {
           placeholder="Search Events"
         />
         <button type="submit">
-          <FaSearch className="absolute top-1/2 right-6 -translate-y-1/2" />
+          <FaSearch className="absolute top-1/2 right-6 -translate-y-1/2 text-blue-500" />
         </button>
       </form>
     </div>

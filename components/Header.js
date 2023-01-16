@@ -14,13 +14,21 @@ const Header = () => {
         <Search />
 
         <nav>
-          <ul>
+          <ul className="flex items-center justify-center gap-4">
             <li>
               <Link
                 href="/events"
                 className="transition-all hover:text-blue-500"
               >
                 Events
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/events/add"
+                className="transition-all hover:text-blue-500"
+              >
+                Add Event
               </Link>
             </li>
           </ul>
