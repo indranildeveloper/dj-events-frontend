@@ -11,9 +11,11 @@ import Modal from "@/components/Modal";
 import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 
-export async function getServerSideProps({ params: { id } }) {
+export async function getServerSideProps({ params: { id }, req }) {
   const res = await fetch(`${API_URL}/events/${id}?populate=image`);
   const event = await res.json();
+
+  console.log(req.headers.cookie);
 
   return {
     props: {
