@@ -12,6 +12,13 @@ const LoginPage = () => {
 
   const { login, error } = useContext(AuthContext);
 
+  useEffect(() => {
+    error &&
+      error.forEach((err) => {
+        toast.error(err);
+      });
+  }, [error]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     login({ email, password });
