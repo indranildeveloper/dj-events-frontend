@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import Search from "./Search";
 
 const Header = () => {
@@ -29,6 +30,14 @@ const Header = () => {
                 className="transition-all hover:text-blue-500"
               >
                 Add Event
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/account/login"
+                className="flex items-center gap-2 border-2 border-blue-500 text-blue-500 px-8 py-2 rounded-md transition-all hover:text-white hover:bg-blue-500"
+              >
+                <FaSignInAlt /> Log In
               </Link>
             </li>
           </ul>
