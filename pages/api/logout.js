@@ -1,6 +1,6 @@
 import cookie from "cookie";
 
-const login = async (req, res) => {
+const logout = async (req, res) => {
   if (req.method === "POST") {
     // Destroy the http only cookie
     res.setHeader(
@@ -23,4 +23,4 @@ const login = async (req, res) => {
   }
 };
 
-export default login;
+export default logout;

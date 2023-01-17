@@ -1,7 +1,7 @@
 import cookie from "cookie";
 import { API_URL } from "@/config/index";
 
-const login = async (req, res) => {
+const user = async (req, res) => {
   if (req.method === "GET") {
     if (!req.headers.cookie) {
       res.status(403).json({ message: "Not authorized!" });
@@ -9,8 +9,6 @@ const login = async (req, res) => {
     }
 
     const { token } = cookie.parse(req.headers.cookie);
-
-    console.log(token);
 
     const strapiResponse = await fetch(`${API_URL}/users/me`, {
       method: "GET",
@@ -33,4 +31,4 @@ const login = async (req, res) => {
   }
 };
 
-export default login;
+export default user;

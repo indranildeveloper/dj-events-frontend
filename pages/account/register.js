@@ -14,6 +14,13 @@ const RegisterPage = () => {
 
   const { register, error } = useContext(AuthContext);
 
+  useEffect(() => {
+    error &&
+      error.forEach((err) => {
+        toast.error(err);
+      });
+  }, [error]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
