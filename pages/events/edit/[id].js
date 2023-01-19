@@ -6,12 +6,14 @@ import moment from "moment";
 import { FaArrowLeft, FaImage } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { parseCookies } from "@/helpers/index";
 import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
 import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 
 export async function getServerSideProps({ params: { id }, req }) {
+  const { token } = parseCookies(req);
   const res = await fetch(`${API_URL}/events/${id}?populate=image`);
   const event = await res.json();
 
@@ -19,11 +21,12 @@ export async function getServerSideProps({ params: { id }, req }) {
     props: {
       event: event.data.attributes,
       eventId: id,
+      token,
     },
   };
 }
 
-const EditEventPage = ({ event, eventId }) => {
+const EditEventPage = ({ event, eventId, token }) => {
   const [formData, setFormData] = useState({
     name: event.name,
     performers: event.performers,
@@ -64,6 +67,7 @@ const EditEventPage = ({ event, eventId }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           data: formData,
@@ -71,9 +75,14 @@ const EditEventPage = ({ event, eventId }) => {
       });
 
       if (!res.ok) {
+        if (res.status === 403 || res.status === 401) {
+          toast.error("Unauthorized!");
+          return;
+        }
         toast.error("Something went wrong!");
       } else {
         const event = await res.json();
+        console.log(event);
         router.push(`/events/${event.data.attributes.slug}`);
       }
     } catch (error) {
@@ -129,6 +138,7 @@ const EditEventPage = ({ event, eventId }) => {
         <ImageUpload
           eventId={eventId}
           imageUploaded={(e) => imageUploaded(e)}
+          token={token}
         />
       </Modal>
 

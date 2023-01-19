@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import moment from "moment";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,7 +32,6 @@ export async function getServerSideProps({ query: { slug } }) {
 }
 
 const EventPage = ({ event, eventId }) => {
-  const router = useRouter();
   const { name, date, performers, description, venue, address } = event;
 
   let imageUrl;
@@ -42,22 +40,6 @@ const EventPage = ({ event, eventId }) => {
   } else {
     imageUrl = "/images/event-default.png";
   }
-
-  const handleDeleteEvent = async (e) => {
-    if (confirm("Are you sure?")) {
-      const res = await fetch(`${API_URL}/events/${eventId}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.message);
-      } else {
-        router.push("/events");
-      }
-    }
-  };
 
   return (
     <Layout>
@@ -69,7 +51,7 @@ const EventPage = ({ event, eventId }) => {
           <FaArrowLeft /> Go Back
         </Link>
 
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <Link
             href={`/events/edit/${eventId}`}
             className="flex items-center justify-center gap-2 border-2 px-8 py-2 rounded-md transition-all border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white"
@@ -82,7 +64,7 @@ const EventPage = ({ event, eventId }) => {
           >
             <FaTrash /> Delete Event
           </button>
-        </div>
+        </div> */}
       </div>
 
       <p className="mb-4">Date: {moment(date).format("MMM Do YYYY, h:mm A")}</p>

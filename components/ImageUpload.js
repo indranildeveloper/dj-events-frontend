@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/config/index";
 
-const ImageUpload = ({ eventId, imageUploaded }) => {
+const ImageUpload = ({ eventId, imageUploaded, token }) => {
   const [image, setImage] = useState(null);
 
   const handleFileChange = (e) => {
@@ -18,8 +20,16 @@ const ImageUpload = ({ eventId, imageUploaded }) => {
 
     const res = await fetch(`${API_URL}/upload`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
     });
+
+    if (res.status === 403 || res.status === 401) {
+      toast.error("Unauthorized!");
+      return;
+    }
 
     if (res.ok) {
       imageUploaded();

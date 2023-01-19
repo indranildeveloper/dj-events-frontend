@@ -5,9 +5,20 @@ import { FaArrowLeft } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/Layout";
+import { parseCookies } from "@/helpers/index";
 import { API_URL } from "@/config/index";
 
-const AddEventPage = () => {
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+
+  return {
+    props: {
+      token,
+    },
+  };
+}
+
+const AddEventPage = ({ token }) => {
   const [formData, setFormData] = useState({
     name: "",
     performers: "",
@@ -42,6 +53,7 @@ const AddEventPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           data: formData,
@@ -49,10 +61,15 @@ const AddEventPage = () => {
       });
 
       if (!res.ok) {
+        if (res.status === 403 || res.status === 401) {
+          toast.error("No token included!");
+          return;
+        }
         toast.error("Something went wrong!");
       } else {
         const event = await res.json();
-        router.push(`/events/${event.data.attributes.slug}`);
+        console.log(event);
+        router.push(`/events/${event.slug}`);
       }
     } catch (error) {
       console.log(error);
