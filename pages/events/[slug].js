@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import moment from "moment";
-import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import qs from "qs";
 import Layout from "@/components/Layout";
+import EventMap from "@/components/EventMap";
 import { API_URL } from "@/config/index";
 
 export async function getServerSideProps({ query: { slug } }) {
@@ -26,12 +27,14 @@ export async function getServerSideProps({ query: { slug } }) {
   return {
     props: {
       event: event.data[0].attributes,
-      eventId: event.data[0].id,
     },
   };
 }
 
-const EventPage = ({ event, eventId }) => {
+const EventPage = ({ event }) => {
+  if (!event) {
+    toast.error("Event not found!");
+  }
   const { name, date, performers, description, venue, address } = event;
 
   let imageUrl;
@@ -87,6 +90,10 @@ const EventPage = ({ event, eventId }) => {
         <p className="mb-2">{description}</p>
         <h3 className="mb-2 text-2xl">Venue: {venue}</h3>
         <p>{address}</p>
+      </div>
+
+      <div className="mb-10">
+        <EventMap address={address} />
       </div>
     </Layout>
   );
