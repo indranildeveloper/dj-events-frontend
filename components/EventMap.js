@@ -30,7 +30,6 @@ const EventMap = ({ address }) => {
       );
       const data = await res.json();
       const { lat, lon } = data[0];
-      console.log(lat, lon);
       setLat(lat);
       setLng(lon);
       setViewState({ ...viewState, latitude: lat, longitude: lon });

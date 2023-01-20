@@ -82,7 +82,6 @@ const EditEventPage = ({ event, eventId, token }) => {
         toast.error("Something went wrong!");
       } else {
         const event = await res.json();
-        console.log(event);
         router.push(`/events/${event.data.attributes.slug}`);
       }
     } catch (error) {
