@@ -29,6 +29,7 @@ const EventMap = ({ address }) => {
         options
       );
       const data = await res.json();
+      if (!data[0] || data === {}) return;
       const { lat, lon } = data[0];
       setLat(lat);
       setLng(lon);
@@ -42,6 +43,10 @@ const EventMap = ({ address }) => {
 
   if (loading) {
     return false;
+  }
+
+  if (lat === undefined || lng === undefined) {
+    return <></>;
   }
 
   return (
